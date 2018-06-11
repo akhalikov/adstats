@@ -1,11 +1,9 @@
 package com.akhalikov.adstats.ads.model;
 
-import java.time.ZonedDateTime;
-
 public final class Delivery {
   private int advertisementId;
   private String deliveryId;
-  private ZonedDateTime time;
+  private String time;
   private String browser;
   private String os;
   private String site;
@@ -15,7 +13,7 @@ public final class Delivery {
 
   public Delivery(int advertisementId,
                   String deliveryId,
-                  ZonedDateTime time,
+                  String time,
                   String browser,
                   String os,
                   String site) {
@@ -35,7 +33,7 @@ public final class Delivery {
     return deliveryId;
   }
 
-  public ZonedDateTime getTime() {
+  public String getTime() {
     return time;
   }
 

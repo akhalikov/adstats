@@ -12,8 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ads")
 public final class AdsController {
 
+  private final DeliveryService deliveryService;
+
+  public AdsController(DeliveryService deliveryService) {
+    this.deliveryService = deliveryService;
+  }
+
   @PostMapping("/delivery")
   public ResponseEntity saveDelivery(@RequestBody Delivery delivery) {
+    deliveryService.saveDelivery(delivery);
     return new ResponseEntity(HttpStatus.OK);
   }
 }

@@ -1,5 +1,6 @@
 package com.akhalikov.adstats;
 
+import com.datastax.driver.core.Session;
 import javax.inject.Inject;
 import static org.assertj.core.api.BDDAssertions.then;
 import org.junit.runner.RunWith;
@@ -22,6 +23,9 @@ public class AdsTestBase {
   @Inject
   private
   TestRestTemplate testRestTemplate;
+
+  @Inject
+  protected Session cassandraSession;
 
   protected void postAndExpect(String url, Object data, Class<?> type, HttpStatus expectedStatus) {
     ResponseEntity entity = testRestTemplate.postForEntity(BASE_URL + ":" + port + url, data, type);

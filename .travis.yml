@@ -1,4 +1,11 @@
 language: java
 sudo: false
-install:
-- mvn clean install
+cache:
+  directories:
+    - $HOME/.m2
+
+after_success:
+- mvn clean jacoco:report coveralls:report
+
+jdk:
+  - oraclejdk8

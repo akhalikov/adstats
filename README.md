@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/akhalikov/adstats-assignment.svg?branch=master)](https://travis-ci.org/akhalikov/adstats-assignment)
+[![Build Status](https://travis-ci.org/akhalikov/adstats-assignment.svg?branch=master)](https://travis-ci.org/akhalikov/adstats-assignment) [![Coverage Status](https://coveralls.io/repos/github/akhalikov/adstats-assignment/badge.svg?branch=master)](https://coveralls.io/github/akhalikov/adstats-assignment?branch=master)
 
 # AdStats assignment
 

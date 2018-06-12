@@ -1,8 +1,10 @@
 package com.akhalikov.adstats;
 
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
 import javax.inject.Inject;
 import static org.assertj.core.api.BDDAssertions.then;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -21,15 +23,19 @@ public class AdsTestBase {
   int port;
 
   @Inject
-  private
-  TestRestTemplate testRestTemplate;
+  private TestRestTemplate testRestTemplate;
 
   @Inject
   protected Session cassandraSession;
 
-  protected void postAndExpect(String url, Object data, Class<?> type, HttpStatus expectedStatus) {
-    ResponseEntity entity = testRestTemplate.postForEntity(BASE_URL + ":" + port + url, data, type);
+  @Before
+  public void setUp() throws Exception {
+    cassandraSession.execute(QueryBuilder.truncate("delivery"));
+  }
 
-    then(entity.getStatusCode()).isEqualTo(expectedStatus);
+  protected void postAndExpect(String url, Object data, Class<?> type, HttpStatus expectedStatus) {
+    ResponseEntity responseEntity = testRestTemplate.postForEntity(BASE_URL + ":" + port + url, data, type);
+
+    then(responseEntity.getStatusCode()).isEqualTo(expectedStatus);
   }
 }

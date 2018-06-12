@@ -5,7 +5,7 @@ cache:
     - $HOME/.m2
 
 after_success:
-- mvn clean jacoco:report coveralls:report
+- mvn clean test jacoco:report coveralls:report
 
 jdk:
   - oraclejdk8

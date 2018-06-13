@@ -3,6 +3,7 @@ package com.akhalikov.adstats.config;
 import com.akhalikov.adstats.ads.AdsController;
 import com.akhalikov.adstats.ads.ClickDao;
 import com.akhalikov.adstats.ads.DeliveryDao;
+import com.akhalikov.adstats.ads.InstallDao;
 import com.akhalikov.adstats.util.cassandra.EmbeddedCassandraConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Import;
     EmbeddedCassandraConfig.class,
     DeliveryDao.class,
     ClickDao.class,
+    InstallDao.class,
     AdsController.class
 })
 public class CommonConfig {

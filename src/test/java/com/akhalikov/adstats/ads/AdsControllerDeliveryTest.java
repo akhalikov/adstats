@@ -14,19 +14,14 @@ public class AdsControllerDeliveryTest extends AdsTestBase {
 
   @Test
   public void shouldReturn200ForValidRequest() {
-    Delivery delivery = new Delivery(4483,
-        "244cf0db-ba28-4c5f-8c9c-2bf11ee42988",
-        "2018-01-07T18:32:23.602300+0000",
-        "Chrome",
-        "iOS",
-        "http://super-dooper-news.com");
+    Delivery delivery = createTestDelivery();
 
     postAndExpect("/ads/delivery", delivery, Delivery.class, HttpStatus.OK);
 
     List<Row> results = cassandraSession.execute(select()
         .from("delivery")
-        .where(eq("delivery_id", "244cf0db-ba28-4c5f-8c9c-2bf11ee42988"))
-        .and(eq("advertisement_id", 4483)))
+        .where(eq("delivery_id", delivery.getDeliveryId()))
+        .and(eq("advertisement_id", delivery.getAdvertisementId())))
         .all();
 
     assertEquals(1, results.size());
@@ -34,12 +29,7 @@ public class AdsControllerDeliveryTest extends AdsTestBase {
 
   @Test
   public void shouldReturn500IfCouldNotParseTime() {
-    Delivery delivery = new Delivery(4483,
-        "244cf0db-ba28-4c5f-8c9c-2bf11ee42988",
-        "2018 08 09 some wrong time",
-        "Chrome",
-        "iOS",
-        "http://test.com");
+    Delivery delivery = createTestDelivery("some wrong formatted time");
 
     postAndExpect("/ads/delivery", delivery, Delivery.class, HttpStatus.INTERNAL_SERVER_ERROR);
   }

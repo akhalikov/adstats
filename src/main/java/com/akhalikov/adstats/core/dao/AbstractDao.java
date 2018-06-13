@@ -1,15 +1,15 @@
-package com.akhalikov.adstats.ads;
+package com.akhalikov.adstats.core.dao;
 
 import com.datastax.driver.core.Session;
 
-public class AbstractDao<T> {
+public class AbstractDao {
   private final Session cassandraSession;
 
   public AbstractDao(Session cassandraSession) {
     this.cassandraSession = cassandraSession;
   }
 
-  Session getCassandraSession() {
+  protected Session getCassandraSession() {
     return cassandraSession;
   }
 }

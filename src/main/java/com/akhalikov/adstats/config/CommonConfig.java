@@ -1,9 +1,9 @@
 package com.akhalikov.adstats.config;
 
-import com.akhalikov.adstats.ads.AdsController;
-import com.akhalikov.adstats.ads.ClickDao;
-import com.akhalikov.adstats.ads.DeliveryDao;
-import com.akhalikov.adstats.ads.InstallDao;
+import com.akhalikov.adstats.ads.SaveAdsController;
+import com.akhalikov.adstats.ads.click.ClickDao;
+import com.akhalikov.adstats.ads.delivery.DeliveryDao;
+import com.akhalikov.adstats.ads.install.InstallDao;
 import com.akhalikov.adstats.util.cassandra.EmbeddedCassandraConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -14,8 +14,9 @@ import org.springframework.context.annotation.Import;
     DeliveryDao.class,
     ClickDao.class,
     InstallDao.class,
-    AdsController.class
+    SaveAdsController.class
 })
 public class CommonConfig {
-  // For beans that are shared between prod and test environments
+  // This context is intended for beans that are shared between
+  // production and testing environments
 }

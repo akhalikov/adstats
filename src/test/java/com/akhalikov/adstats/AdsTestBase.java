@@ -1,8 +1,8 @@
 package com.akhalikov.adstats;
 
-import com.akhalikov.adstats.ads.model.Click;
-import com.akhalikov.adstats.ads.model.Delivery;
-import com.akhalikov.adstats.ads.model.Install;
+import com.akhalikov.adstats.ads.click.Click;
+import com.akhalikov.adstats.ads.delivery.Delivery;
+import com.akhalikov.adstats.ads.install.Install;
 import static com.akhalikov.adstats.util.DateTimeUtils.TIME_FORMATTER;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;

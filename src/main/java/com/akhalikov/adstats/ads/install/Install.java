@@ -1,4 +1,4 @@
-package com.akhalikov.adstats.ads.model;
+package com.akhalikov.adstats.ads.install;
 
 public final class Install {
 

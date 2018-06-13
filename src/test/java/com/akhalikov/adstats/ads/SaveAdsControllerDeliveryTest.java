@@ -1,7 +1,7 @@
 package com.akhalikov.adstats.ads;
 
 import com.akhalikov.adstats.AdsTestBase;
-import com.akhalikov.adstats.ads.model.Delivery;
+import com.akhalikov.adstats.ads.delivery.Delivery;
 import com.datastax.driver.core.Row;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-public class AdsControllerDeliveryTest extends AdsTestBase {
+public class SaveAdsControllerDeliveryTest extends AdsTestBase {
 
   @Test
   public void shouldReturn200ForValidRequest() {

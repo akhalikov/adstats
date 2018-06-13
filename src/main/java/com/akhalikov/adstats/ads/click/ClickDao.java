@@ -1,6 +1,6 @@
-package com.akhalikov.adstats.ads;
+package com.akhalikov.adstats.ads.click;
 
-import com.akhalikov.adstats.ads.model.Click;
+import com.akhalikov.adstats.core.dao.AbstractDao;
 import static com.akhalikov.adstats.util.DateTimeUtils.parseInstant;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
@@ -28,7 +28,7 @@ public class ClickDao extends AbstractDao {
         .where(eq("click_id", QueryBuilder.bindMarker())));
   }
 
-  void save(Click click) {
+  public void save(Click click) {
     getCassandraSession().execute(savePreparedStatement.bind(
         click.getClickId(),
         click.getDeliveryId(),
@@ -36,7 +36,7 @@ public class ClickDao extends AbstractDao {
     ));
   }
 
-  int fetchCount(String clickId) {
+  public int fetchCount(String clickId) {
     return getCassandraSession()
         .execute(fetchByClickIdPreparedStatement.bind(clickId))
         .getAvailableWithoutFetching();

@@ -1,6 +1,6 @@
-package com.akhalikov.adstats.ads;
+package com.akhalikov.adstats.ads.delivery;
 
-import com.akhalikov.adstats.ads.model.Delivery;
+import com.akhalikov.adstats.core.dao.AbstractDao;
 import static com.akhalikov.adstats.util.DateTimeUtils.parseInstant;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
@@ -30,7 +30,7 @@ public class DeliveryDao extends AbstractDao {
         .where(eq("delivery_id", QueryBuilder.bindMarker())));
   }
 
-  void save(Delivery delivery) {
+  public void save(Delivery delivery) {
     getCassandraSession().execute(savePreparedStatement.bind(
         delivery.getDeliveryId(),
         delivery.getAdvertisementId(),
@@ -40,7 +40,7 @@ public class DeliveryDao extends AbstractDao {
         delivery.getSite()));
   }
 
-  int fetchCount(String deliveryId) {
+  public int fetchCount(String deliveryId) {
     return getCassandraSession()
         .execute(fetchByDeliveryIdPreparedStatement.bind(deliveryId))
         .getAvailableWithoutFetching();

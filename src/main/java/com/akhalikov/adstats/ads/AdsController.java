@@ -2,6 +2,7 @@ package com.akhalikov.adstats.ads;
 
 import com.akhalikov.adstats.ads.model.Click;
 import com.akhalikov.adstats.ads.model.Delivery;
+import com.akhalikov.adstats.ads.model.Install;
 import org.springframework.http.ResponseEntity;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
@@ -16,10 +17,12 @@ public final class AdsController {
 
   private final DeliveryDao deliveryDao;
   private final ClickDao clickDao;
+  private final InstallDao installDao;
 
-  public AdsController(DeliveryDao deliveryDao, ClickDao clickDao) {
+  public AdsController(DeliveryDao deliveryDao, ClickDao clickDao, InstallDao installDao) {
     this.deliveryDao = deliveryDao;
     this.clickDao = clickDao;
+    this.installDao = installDao;
   }
 
   @PostMapping("/delivery")
@@ -33,7 +36,16 @@ public final class AdsController {
     if (deliveryDao.fetchCount(click.getDeliveryId()) == 0) {
       return notFound().build();
     }
-    clickDao.saveClick(click);
+    clickDao.save(click);
+    return ok().build();
+  }
+
+  @PostMapping("/install")
+  public ResponseEntity install(@RequestBody Install install) {
+    if (clickDao.fetchCount(install.getClickId()) == 0) {
+      return notFound().build();
+    }
+    installDao.save(install);
     return ok().build();
   }
 }

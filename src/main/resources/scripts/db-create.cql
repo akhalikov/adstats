@@ -16,3 +16,10 @@ delivery_id TEXT,
 time TIMESTAMP,
 PRIMARY KEY(click_id, delivery_id)
 );
+
+CREATE TABLE IF NOT EXISTS adstats.install (
+install_id TEXT,
+click_id TEXT,
+time TIMESTAMP,
+PRIMARY KEY(install_id, click_id)
+);

@@ -6,27 +6,39 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.bindMarker;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 
-public class ClickDao {
+public class ClickDao extends AbstractDao {
 
-  private final Session cassandraSession;
   private final PreparedStatement savePreparedStatement;
+  private final PreparedStatement fetchByClickIdPreparedStatement;
 
   public ClickDao(Session cassandraSession) {
-    this.cassandraSession = cassandraSession;
+    super(cassandraSession);
 
     savePreparedStatement = cassandraSession.prepare(QueryBuilder
         .insertInto("click")
         .value("click_id", bindMarker())
         .value("delivery_id", bindMarker())
         .value("time", bindMarker()));
+
+    fetchByClickIdPreparedStatement = cassandraSession.prepare(QueryBuilder.
+        select().all()
+        .from("click")
+        .where(eq("click_id", QueryBuilder.bindMarker())));
   }
 
-  void saveClick(Click click) {
-    cassandraSession.execute(savePreparedStatement.bind(
+  void save(Click click) {
+    getCassandraSession().execute(savePreparedStatement.bind(
         click.getClickId(),
         click.getDeliveryId(),
         parseInstant(click.getTime())
     ));
+  }
+
+  int fetchCount(String clickId) {
+    return getCassandraSession()
+        .execute(fetchByClickIdPreparedStatement.bind(clickId))
+        .getAvailableWithoutFetching();
   }
 }

@@ -8,13 +8,12 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.bindMarker;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 
-public class DeliveryDao {
-  private final Session cassandraSession;
+public class DeliveryDao extends AbstractDao {
   private final PreparedStatement savePreparedStatement;
   private final PreparedStatement fetchByDeliveryIdPreparedStatement;
 
   public DeliveryDao(Session cassandraSession) {
-    this.cassandraSession = cassandraSession;
+    super(cassandraSession);
 
     savePreparedStatement = cassandraSession.prepare(QueryBuilder
         .insertInto("delivery")
@@ -32,7 +31,7 @@ public class DeliveryDao {
   }
 
   void save(Delivery delivery) {
-    cassandraSession.execute(savePreparedStatement.bind(
+    getCassandraSession().execute(savePreparedStatement.bind(
         delivery.getDeliveryId(),
         delivery.getAdvertisementId(),
         parseInstant(delivery.getTime()),
@@ -42,7 +41,8 @@ public class DeliveryDao {
   }
 
   int fetchCount(String deliveryId) {
-    return cassandraSession.execute(fetchByDeliveryIdPreparedStatement.bind(deliveryId))
+    return getCassandraSession()
+        .execute(fetchByDeliveryIdPreparedStatement.bind(deliveryId))
         .getAvailableWithoutFetching();
   }
 }

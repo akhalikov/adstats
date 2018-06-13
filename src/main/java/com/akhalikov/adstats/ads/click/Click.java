@@ -1,4 +1,4 @@
-package com.akhalikov.adstats.ads.model;
+package com.akhalikov.adstats.ads.click;
 
 public final class Click {
 

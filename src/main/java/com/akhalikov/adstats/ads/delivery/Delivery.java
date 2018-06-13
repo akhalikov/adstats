@@ -1,4 +1,4 @@
-package com.akhalikov.adstats.ads.model;
+package com.akhalikov.adstats.ads.delivery;
 
 public final class Delivery {
   private int advertisementId;

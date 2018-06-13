@@ -8,5 +8,6 @@ import org.springframework.context.annotation.Import;
     CommonConfig.class
 })
 public class ProdConfig {
-  // Only production beans
+  // This context is for production beans only
+  // for example: services that should be mocked in the unit tests
 }

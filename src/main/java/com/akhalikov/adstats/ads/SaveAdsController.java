@@ -1,8 +1,11 @@
 package com.akhalikov.adstats.ads;
 
-import com.akhalikov.adstats.ads.model.Click;
-import com.akhalikov.adstats.ads.model.Delivery;
-import com.akhalikov.adstats.ads.model.Install;
+import com.akhalikov.adstats.ads.click.ClickDao;
+import com.akhalikov.adstats.ads.delivery.DeliveryDao;
+import com.akhalikov.adstats.ads.install.InstallDao;
+import com.akhalikov.adstats.ads.click.Click;
+import com.akhalikov.adstats.ads.delivery.Delivery;
+import com.akhalikov.adstats.ads.install.Install;
 import org.springframework.http.ResponseEntity;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
@@ -13,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/ads")
-public final class AdsController {
+public final class SaveAdsController {
 
   private final DeliveryDao deliveryDao;
   private final ClickDao clickDao;
   private final InstallDao installDao;
 
-  public AdsController(DeliveryDao deliveryDao, ClickDao clickDao, InstallDao installDao) {
+  public SaveAdsController(DeliveryDao deliveryDao, ClickDao clickDao, InstallDao installDao) {
     this.deliveryDao = deliveryDao;
     this.clickDao = clickDao;
     this.installDao = installDao;
@@ -32,7 +35,7 @@ public final class AdsController {
   }
 
   @PostMapping("/click")
-  public ResponseEntity click(@RequestBody Click click) {
+  public ResponseEntity saveClick(@RequestBody Click click) {
     if (deliveryDao.fetchCount(click.getDeliveryId()) == 0) {
       return notFound().build();
     }
@@ -41,7 +44,7 @@ public final class AdsController {
   }
 
   @PostMapping("/install")
-  public ResponseEntity install(@RequestBody Install install) {
+  public ResponseEntity saveInstall(@RequestBody Install install) {
     if (clickDao.fetchCount(install.getClickId()) == 0) {
       return notFound().build();
     }

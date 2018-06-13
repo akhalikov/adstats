@@ -1,8 +1,9 @@
 package com.akhalikov.adstats.ads;
 
 import com.akhalikov.adstats.AdsTestBase;
-import com.akhalikov.adstats.ads.model.Click;
-import com.akhalikov.adstats.ads.model.Delivery;
+import com.akhalikov.adstats.ads.click.Click;
+import com.akhalikov.adstats.ads.click.ClickDao;
+import com.akhalikov.adstats.ads.install.Install;
 import com.datastax.driver.core.Row;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
@@ -12,32 +13,32 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-public class AdsControllerClickTest extends AdsTestBase {
+public class SaveAdsControllerInstallTest extends AdsTestBase {
   @Inject
-  private DeliveryDao deliveryDao;
+  private ClickDao clickDao;
 
   @Test
   public void shouldReturn200ForValidRequest() {
-    Delivery delivery = createTestDelivery();
+    Click click = createTestClick(TEST_DELIVERY_ID);
 
-    deliveryDao.save(delivery);
+    clickDao.save(click);
 
-    Click click = createTestClick(delivery.getDeliveryId());
+    Install install = createTestInstall(click.getClickId());
 
-    postAndExpect("/ads/click", click, Click.class, HttpStatus.OK);
+    postAndExpect("/ads/install", install, Install.class, HttpStatus.OK);
 
     List<Row> results = cassandraSession.execute(select()
-        .from("click")
-        .where(eq("click_id", click.getClickId()))
-        .and(eq("delivery_id", delivery.getDeliveryId())))
+        .from("install")
+        .where(eq("install_id", install.getInstallId()))
+        .and(eq("click_id", install.getClickId())))
         .all();
 
     assertEquals(1, results.size());
   }
 
   @Test
-  public void shouldReturn404IfDeliveryIsNotFound() {
-    Click click = createTestClick("missing-delivery-id");
+  public void shouldReturn404IfClickIsNotFound() {
+    Click click = createTestClick("missing-click-id");
 
     postAndExpect("/ads/click", click, Click.class, HttpStatus.NOT_FOUND);
   }

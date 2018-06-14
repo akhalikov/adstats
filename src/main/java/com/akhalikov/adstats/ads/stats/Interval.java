@@ -1,21 +1,33 @@
 package com.akhalikov.adstats.ads.stats;
 
-import java.time.ZonedDateTime;
+import com.akhalikov.adstats.util.Constants;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Interval {
-  private final ZonedDateTime start;
-  private final ZonedDateTime end;
+import java.util.Date;
 
-  public Interval(ZonedDateTime start, ZonedDateTime end) {
+public final class Interval {
+  @JsonProperty
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.TIME_FORMAT)
+  private Date start;
+
+  @JsonProperty
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.TIME_FORMAT)
+  private Date end;
+
+  public Interval() {
+  }
+
+  Interval(Date start, Date end) {
     this.start = start;
     this.end = end;
   }
 
-  public ZonedDateTime getStart() {
+  public Date getStart() {
     return start;
   }
 
-  public ZonedDateTime getEnd() {
+  public Date getEnd() {
     return end;
   }
 }

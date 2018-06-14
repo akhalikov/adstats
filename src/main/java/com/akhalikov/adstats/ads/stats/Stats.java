@@ -1,25 +1,29 @@
 package com.akhalikov.adstats.ads.stats;
 
 public final class Stats {
-  private final int deliveries;
-  private final int clicks;
-  private final int installs;
+  private final long deliveries;
+  private final long clicks;
+  private final long installs;
 
-  public Stats(int deliveries, int clicks, int installs) {
+  public Stats() {
+    this(0, 0, 0);
+  }
+
+  Stats(long deliveries, long clicks, long installs) {
     this.deliveries = deliveries;
     this.clicks = clicks;
     this.installs = installs;
   }
 
-  public int getDeliveries() {
+  public long getDeliveries() {
     return deliveries;
   }
 
-  public int getClicks() {
+  public long getClicks() {
     return clicks;
   }
 
-  public int getInstalls() {
+  public long getInstalls() {
     return installs;
   }
 }

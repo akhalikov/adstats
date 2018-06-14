@@ -1,9 +1,7 @@
 package com.akhalikov.adstats.util.cassandra;
 
 import static com.akhalikov.adstats.util.cassandra.ClusterFactory.createCassandraClientCluster;
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.extras.codecs.jdk8.InstantCodec;
 import java.io.IOException;
 import java.util.Properties;
 import org.apache.cassandra.exceptions.ConfigurationException;
@@ -17,11 +15,7 @@ final class SessionFactory {
 
     Properties clientProperties = new Properties();
     clientProperties.setProperty("nodes", "127.0.0.1:" + clusterPort);
-    Cluster cluster = createCassandraClientCluster(clientProperties);
-    cluster.getConfiguration().getCodecRegistry()
-        .register(InstantCodec.instance);
-
-    return cluster.connect();
+    return createCassandraClientCluster(clientProperties).connect();
   }
 
   private static int startEmbeddedCassandraAndGetPort() throws TTransportException, IOException, ConfigurationException {

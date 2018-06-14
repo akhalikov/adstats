@@ -3,13 +3,13 @@ package com.akhalikov.adstats.core.dao;
 import com.datastax.driver.core.Session;
 
 public class AbstractDao {
-  private final Session cassandraSession;
+  private final Session session;
 
-  public AbstractDao(Session cassandraSession) {
-    this.cassandraSession = cassandraSession;
+  public AbstractDao(Session session) {
+    this.session = session;
   }
 
-  protected Session getCassandraSession() {
-    return cassandraSession;
+  protected Session getSession() {
+    return session;
   }
 }

@@ -1,9 +1,16 @@
 package com.akhalikov.adstats.ads.install;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public final class Install {
 
+  @JsonProperty
   private String installId;
+
+  @JsonProperty
   private String clickId;
+
+  @JsonProperty
   private String time;
 
   public Install() {

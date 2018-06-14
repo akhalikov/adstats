@@ -1,29 +1,41 @@
 package com.akhalikov.adstats.ads.click;
 
+import com.akhalikov.adstats.util.Constants;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Date;
+
 public final class Click {
 
-  private String deliveryId;
+  @JsonProperty
   private String clickId;
-  private String time;
+
+  @JsonProperty
+  private String deliveryId;
+
+  @JsonProperty
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.TIME_FORMAT_STRICT)
+  private Date time;
 
   public Click() {
   }
 
-  public Click(String deliveryId, String clickId, String time) {
-    this.deliveryId = deliveryId;
+  public Click(String clickId, String deliveryId, Date time) {
     this.clickId = clickId;
+    this.deliveryId = deliveryId;
     this.time = time;
-  }
-
-  public String getDeliveryId() {
-    return deliveryId;
   }
 
   public String getClickId() {
     return clickId;
   }
 
-  public String getTime() {
+  public String getDeliveryId() {
+    return deliveryId;
+  }
+
+  public Date getTime() {
     return time;
   }
 }

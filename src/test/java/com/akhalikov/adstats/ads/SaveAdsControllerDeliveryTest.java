@@ -1,16 +1,15 @@
 package com.akhalikov.adstats.ads;
 
-import com.akhalikov.adstats.AdsTestBase;
+import com.akhalikov.adstats.RestTestBase;
 import com.akhalikov.adstats.ads.delivery.Delivery;
 import com.datastax.driver.core.Row;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
-import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-public class SaveAdsControllerDeliveryTest extends AdsTestBase {
+public class SaveAdsControllerDeliveryTest extends RestTestBase {
 
   @Test
   public void shouldReturn200ForValidRequest() {
@@ -18,19 +17,12 @@ public class SaveAdsControllerDeliveryTest extends AdsTestBase {
 
     postAndExpect("/ads/delivery", delivery, Delivery.class, HttpStatus.OK);
 
-    List<Row> results = cassandraSession.execute(select()
+    Row result = cassandraSession.execute(select()
         .from("delivery")
-        .where(eq("delivery_id", delivery.getDeliveryId()))
-        .and(eq("advertisement_id", delivery.getAdvertisementId())))
-        .all();
+        .where(eq("delivery_id", delivery.getDeliveryId())))
+        .one();
 
-    assertEquals(1, results.size());
-  }
-
-  @Test
-  public void shouldReturn500IfCouldNotParseTime() {
-    Delivery delivery = createTestDelivery("some wrong formatted time");
-
-    postAndExpect("/ads/delivery", delivery, Delivery.class, HttpStatus.INTERNAL_SERVER_ERROR);
+    assertEquals(delivery.getDeliveryId(), result.getString("delivery_id"));
+    assertEquals(delivery.getAdvertisementId(), result.getInt("advertisement_id"));
   }
 }

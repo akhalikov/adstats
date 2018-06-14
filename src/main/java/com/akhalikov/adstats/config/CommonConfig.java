@@ -4,6 +4,7 @@ import com.akhalikov.adstats.ads.SaveAdsController;
 import com.akhalikov.adstats.ads.click.ClickDao;
 import com.akhalikov.adstats.ads.delivery.DeliveryDao;
 import com.akhalikov.adstats.ads.install.InstallDao;
+import com.akhalikov.adstats.ads.stats.StatsDao;
 import com.akhalikov.adstats.util.cassandra.EmbeddedCassandraConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Import;
     DeliveryDao.class,
     ClickDao.class,
     InstallDao.class,
+    StatsDao.class,
     SaveAdsController.class
 })
 public class CommonConfig {

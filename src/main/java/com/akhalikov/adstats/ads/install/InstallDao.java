@@ -1,7 +1,6 @@
 package com.akhalikov.adstats.ads.install;
 
 import com.akhalikov.adstats.core.dao.AbstractDao;
-import static com.akhalikov.adstats.util.DateTimeUtils.parseInstant;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -25,7 +24,7 @@ public class InstallDao extends AbstractDao {
     getCassandraSession().execute(savePreparedStatement.bind(
         install.getInstallId(),
         install.getClickId(),
-        parseInstant(install.getTime())
+        install.getTime()
     ));
   }
 }

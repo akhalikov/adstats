@@ -1,39 +1,34 @@
 package com.akhalikov.adstats.ads;
 
-import com.akhalikov.adstats.AdsTestBase;
+import com.akhalikov.adstats.RestTestBase;
 import com.akhalikov.adstats.ads.click.Click;
-import com.akhalikov.adstats.ads.click.ClickDao;
+import com.akhalikov.adstats.ads.delivery.Delivery;
 import com.akhalikov.adstats.ads.install.Install;
 import com.datastax.driver.core.Row;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
-import java.util.List;
-import javax.inject.Inject;
+import org.joda.time.DateTime;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-public class SaveAdsControllerInstallTest extends AdsTestBase {
-  @Inject
-  private ClickDao clickDao;
+public class SaveAdsControllerInstallTest extends RestTestBase {
 
   @Test
   public void shouldReturn200ForValidRequest() {
-    Click click = createTestClick(TEST_DELIVERY_ID);
-
-    clickDao.save(click);
-
-    Install install = createTestInstall(click.getClickId());
+    Delivery delivery = createTestDelivery();
+    Click click = createTestClick(delivery.getDeliveryId());
+    Install install = getTestInstall(click.getClickId(), DateTime.now().toDate());
 
     postAndExpect("/ads/install", install, Install.class, HttpStatus.OK);
 
-    List<Row> results = cassandraSession.execute(select()
+    Row result = cassandraSession.execute(select()
         .from("install")
-        .where(eq("install_id", install.getInstallId()))
-        .and(eq("click_id", install.getClickId())))
-        .all();
+        .where(eq("install_id", install.getInstallId())))
+        .one();
 
-    assertEquals(1, results.size());
+    assertEquals(install.getInstallId(), result.getString("install_id"));
+    assertEquals(install.getClickId(), result.getString("click_id"));
   }
 
   @Test

@@ -7,20 +7,23 @@ import com.akhalikov.adstats.ads.install.Install;
 import com.datastax.driver.core.Row;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
-import org.joda.time.DateTime;
+import static java.time.ZonedDateTime.now;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-public class SaveAdsControllerInstallTest extends RestTestBase {
+public class AdsControllerInstallTest extends RestTestBase {
 
   @Test
   public void shouldReturn200ForValidRequest() {
-    Delivery delivery = createTestDelivery();
-    Click click = createTestClick(delivery.getDeliveryId());
-    Install install = getTestInstall(click.getClickId(), DateTime.now().toDate());
+    Delivery delivery = getTestDelivery(now().minusSeconds(100));
+    postOk("/delivery", delivery, Delivery.class);
 
-    postAndExpect("/ads/install", install, Install.class, HttpStatus.OK);
+    Click click = getTestClick(delivery.getDeliveryId(), now());
+    postOk("/click", click, Click.class);
+
+    Install install = getTestInstall(click.getClickId(), now());
+    postOk("/install", install, Install.class);
 
     Row result = cassandraSession.execute(select()
         .from("install")
@@ -33,8 +36,8 @@ public class SaveAdsControllerInstallTest extends RestTestBase {
 
   @Test
   public void shouldReturn404IfClickIsNotFound() {
-    Click click = createTestClick("missing-click-id");
+    Click click = getTestClick("missing-click-id", now());
 
-    postAndExpect("/ads/click", click, Click.class, HttpStatus.NOT_FOUND);
+    postAndExpect("/click", click, Click.class, HttpStatus.NOT_FOUND);
   }
 }

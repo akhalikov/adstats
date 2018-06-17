@@ -1,10 +1,6 @@
 package com.akhalikov.adstats.ads.click;
 
-import com.akhalikov.adstats.util.Constants;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Date;
 
 public final class Click {
 
@@ -15,13 +11,12 @@ public final class Click {
   private String deliveryId;
 
   @JsonProperty
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.TIME_FORMAT_STRICT)
-  private Date time;
+  private String time;
 
   public Click() {
   }
 
-  public Click(String clickId, String deliveryId, Date time) {
+  public Click(String clickId, String deliveryId, String time) {
     this.clickId = clickId;
     this.deliveryId = deliveryId;
     this.time = time;
@@ -35,7 +30,7 @@ public final class Click {
     return deliveryId;
   }
 
-  public Date getTime() {
+  public String getTime() {
     return time;
   }
 }

@@ -23,3 +23,10 @@ click_id text,
 "time" timestamp,
 PRIMARY KEY(install_id, "time")
 ) WITH CLUSTERING ORDER BY ("time" ASC);
+
+CREATE TABLE IF NOT EXISTS adstats.stats (
+metric_name text,
+event_time timestamp,
+counter_value counter,
+PRIMARY KEY(metric_name, event_time)
+);

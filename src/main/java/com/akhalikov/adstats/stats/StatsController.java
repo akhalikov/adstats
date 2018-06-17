@@ -18,13 +18,13 @@ public class StatsController {
   }
 
   @GetMapping("/statistics")
-  public StatsForInterval getStatisticsForInterval(@RequestParam(value = "start") String start,
-                                                   @RequestParam(value = "end") String end) {
+  public IntervalStats getStatisticsForInterval(@RequestParam(value = "start") String start,
+                                                @RequestParam(value = "end") String end) {
 
     Date startTime = Date.from(parseShort(start, true));
     Date endTime = Date.from(parseShort(end, true));
 
     Stats stats = statsDao.fetchStats(startTime, endTime);
-    return new StatsForInterval(startTime, endTime, stats);
+    return new IntervalStats(startTime, endTime, stats);
   }
 }

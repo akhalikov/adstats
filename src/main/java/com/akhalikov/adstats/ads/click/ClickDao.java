@@ -1,7 +1,10 @@
 package com.akhalikov.adstats.ads.click;
 
 import com.akhalikov.adstats.core.dao.AbstractDao;
+import com.akhalikov.adstats.exception.ClickNotFoundException;
 import com.datastax.driver.core.PreparedStatement;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.bindMarker;
@@ -23,7 +26,7 @@ public class ClickDao extends AbstractDao {
         .value("time", bindMarker()));
 
     getClickByIdQuery = cassandraSession.prepare(QueryBuilder.
-        select("click_id")
+        select("click_id", "delivery_id", "time")
         .from("click")
         .where(eq("click_id", QueryBuilder.bindMarker())));
   }
@@ -32,8 +35,15 @@ public class ClickDao extends AbstractDao {
     getCassandraSession().execute(saveQuery.bind(clickId, deliveryId, time));
   }
 
-  public boolean hasClick(String clickId) {
-    return getCassandraSession().execute(getClickByIdQuery.bind(clickId))
-        .getAvailableWithoutFetching() > 0;
+  public Click getClickOrThrow(String clickId) {
+    ResultSet resultSet = getCassandraSession().execute(getClickByIdQuery.bind(clickId));
+    Row row = resultSet.one();
+    if (row == null) {
+      throw new ClickNotFoundException(clickId);
+    }
+    return new Click(
+        row.getString("click_id"),
+        row.getString("delivery_id"),
+        row.getTimestamp("time").toString());
   }
 }

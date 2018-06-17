@@ -7,6 +7,7 @@ import com.akhalikov.adstats.ads.delivery.DeliveryService;
 import com.akhalikov.adstats.ads.install.InstallDao;
 import com.akhalikov.adstats.ads.install.InstallService;
 import com.akhalikov.adstats.stats.StatsDao;
+import com.akhalikov.adstats.stats.StatsService;
 import com.akhalikov.adstats.util.cassandra.EmbeddedCassandraConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -20,7 +21,8 @@ import org.springframework.context.annotation.Import;
     DeliveryService.class,
     ClickService.class,
     InstallService.class,
-    StatsDao.class
+    StatsDao.class,
+    StatsService.class
 })
 public class CommonConfig {
   // This context is intended for beans that are shared between

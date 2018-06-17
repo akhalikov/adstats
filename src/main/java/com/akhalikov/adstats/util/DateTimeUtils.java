@@ -6,10 +6,9 @@ import java.time.format.DateTimeFormatter;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 public final class DateTimeUtils {
-  public static final String TIME_FORMAT_FUll = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ";
   public static final String TIME_FORMAT_SHORT = "yyyy-MM-dd'T'HH:mm:ss";
 
-  private static final DateTimeFormatter TIME_FORMATTER_FULL = ofPattern(TIME_FORMAT_FUll);
+  private static final DateTimeFormatter TIME_FORMATTER_FULL = ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ");
   public static final DateTimeFormatter TIME_FORMATTER_SHORT = ofPattern(TIME_FORMAT_SHORT);
   public static final DateTimeFormatter TIME_FORMATTER_SHORT_WITH_ZONE = ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 

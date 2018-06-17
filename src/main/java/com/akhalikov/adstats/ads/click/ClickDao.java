@@ -28,7 +28,7 @@ public class ClickDao extends AbstractDao {
         .where(eq("click_id", QueryBuilder.bindMarker())));
   }
 
-  public void save(String clickId, String deliveryId, Date time) {
+  void save(String clickId, String deliveryId, Date time) {
     getCassandraSession().execute(saveQuery.bind(clickId, deliveryId, time));
   }
 

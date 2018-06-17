@@ -1,18 +1,17 @@
 package com.akhalikov.adstats.stats;
 
-import com.akhalikov.adstats.util.DateTimeUtils;
+import static com.akhalikov.adstats.util.DateTimeUtils.TIME_FORMAT_SHORT;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 
 public final class Interval {
   @JsonProperty
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.TIME_FORMAT_SHORT)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT_SHORT)
   private Date start;
 
   @JsonProperty
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateTimeUtils.TIME_FORMAT_SHORT)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT_SHORT)
   private Date end;
 
   public Interval() {

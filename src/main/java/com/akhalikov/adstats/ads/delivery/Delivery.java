@@ -1,25 +1,12 @@
 package com.akhalikov.adstats.ads.delivery;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public final class Delivery {
 
-  @JsonProperty
   private int advertisementId;
-
-  @JsonProperty
   private String deliveryId;
-
-  @JsonProperty
   private String time;
-
-  @JsonProperty
   private String browser;
-
-  @JsonProperty
   private String os;
-
-  @JsonProperty
   private String site;
 
   public Delivery() {

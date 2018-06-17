@@ -3,7 +3,7 @@ package com.akhalikov.adstats;
 import com.akhalikov.adstats.ads.click.Click;
 import com.akhalikov.adstats.ads.delivery.Delivery;
 import com.akhalikov.adstats.ads.install.Install;
-import com.akhalikov.adstats.util.DateTimeUtils;
+import static com.akhalikov.adstats.util.DateTimeUtils.formatFull;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import java.time.ZonedDateTime;
@@ -27,6 +27,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 public abstract class RestTestBase {
   private static final String BASE_URL = "http://localhost:%d/ads";
   private static final int TEST_ADVERTISEMENT_ID = 4242;
+  private static final String TEST_BROWSER = "Chrome";
+  private static final String TEST_OS = "iOS";
 
   @LocalServerPort
   private int port;
@@ -70,16 +72,25 @@ public abstract class RestTestBase {
 
   protected static Delivery getTestDelivery(ZonedDateTime time) {
     return new Delivery(
-        TEST_ADVERTISEMENT_ID, randomUUID().toString(),
-        DateTimeUtils.formatFull(time),
-        "Chrome", "iOS", "http://super-dooper-news.com");
+        randomUUID().toString(),
+        TEST_ADVERTISEMENT_ID,
+        formatFull(time),
+        TEST_BROWSER, TEST_OS, "http://super-dooper-news.com");
+  }
+
+  protected static Delivery getTestDelivery(ZonedDateTime time, String browser, String os) {
+    return new Delivery(
+        randomUUID().toString(),
+        TEST_ADVERTISEMENT_ID,
+        formatFull(time),
+        browser, os, "http://super-dooper-news.com");
   }
 
   protected static Click getTestClick(String deliveryId, ZonedDateTime time) {
-    return new Click(randomUUID().toString(), deliveryId, DateTimeUtils.formatFull(time));
+    return new Click(randomUUID().toString(), deliveryId, formatFull(time));
   }
 
   protected static Install getTestInstall(String clickId, ZonedDateTime time) {
-    return new Install(randomUUID().toString(), clickId, DateTimeUtils.formatFull(time));
+    return new Install(randomUUID().toString(), clickId, formatFull(time));
   }
 }

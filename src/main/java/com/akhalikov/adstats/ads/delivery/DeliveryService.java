@@ -1,19 +1,18 @@
 package com.akhalikov.adstats.ads.delivery;
 
 import com.akhalikov.adstats.stats.Metric;
-import com.akhalikov.adstats.stats.StatsDao;
+import com.akhalikov.adstats.stats.StatsService;
 import com.akhalikov.adstats.util.DateTimeUtils;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class DeliveryService {
   private final DeliveryDao deliveryDao;
-  private final StatsDao statsDao;
+  private final StatsService statsService;
 
-  public DeliveryService(DeliveryDao deliveryDao, StatsDao statsDao) {
+  public DeliveryService(DeliveryDao deliveryDao, StatsService statsService) {
     this.deliveryDao = deliveryDao;
-    this.statsDao = statsDao;
+    this.statsService = statsService;
   }
 
   public void saveDelivery(Delivery delivery) {
@@ -27,6 +26,6 @@ public class DeliveryService {
         delivery.getOs(),
         delivery.getSite());
 
-    statsDao.increaseMetric(Metric.DELIVERY, time.truncatedTo(ChronoUnit.SECONDS));
+    statsService.updateMetric(Metric.DELIVERY, delivery, time);
   }
 }

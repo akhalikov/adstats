@@ -1,20 +1,19 @@
 package com.akhalikov.adstats.stats;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Date;
 
-public final class IntervalStats {
+public final class BasicStats {
   @JsonProperty
   private Interval interval;
 
   @JsonProperty
   private Stats stats;
 
-  public IntervalStats() {
+  public BasicStats() {
   }
 
-  IntervalStats(Date start, Date end, Stats stats) {
-    this.interval = new Interval(start, end);
+  BasicStats(Interval interval, Stats stats) {
+    this.interval = interval;
     this.stats = stats;
   }
 

@@ -36,8 +36,8 @@ public class AdsControllerInstallTest extends RestTestBase {
 
   @Test
   public void shouldReturn404IfClickIsNotFound() {
-    Click click = getTestClick("missing-click-id", now());
+    Install install = getTestInstall("missing-click-id", now());
 
-    postAndExpect("/click", click, Click.class, HttpStatus.NOT_FOUND);
+    postAndExpect("/install", install, Click.class, HttpStatus.NOT_FOUND);
   }
 }

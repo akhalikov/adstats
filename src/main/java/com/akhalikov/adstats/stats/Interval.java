@@ -1,8 +1,10 @@
 package com.akhalikov.adstats.stats;
 
 import static com.akhalikov.adstats.util.DateTimeUtils.TIME_FORMAT_SHORT;
+import static com.akhalikov.adstats.util.DateTimeUtils.parseShort;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 public final class Interval {
@@ -28,5 +30,11 @@ public final class Interval {
 
   public Date getEnd() {
     return end;
+  }
+
+  public static Interval from(String start, String end) {
+    Date startTime = Date.from(parseShort(start, true));
+    Date endTime = Date.from(parseShort(end, true));
+    return new Interval(startTime, endTime);
   }
 }

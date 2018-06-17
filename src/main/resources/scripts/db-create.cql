@@ -27,6 +27,8 @@ PRIMARY KEY(install_id, "time")
 CREATE TABLE IF NOT EXISTS adstats.stats (
 metric_name text,
 event_time timestamp,
+browser text,
+os text,
 counter_value counter,
-PRIMARY KEY(metric_name, event_time)
+PRIMARY KEY(metric_name, event_time, browser, os)
 );

@@ -1,10 +1,6 @@
 package com.akhalikov.adstats.ads.delivery;
 
-import com.akhalikov.adstats.util.Constants;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Date;
 
 public final class Delivery {
 
@@ -15,8 +11,7 @@ public final class Delivery {
   private String deliveryId;
 
   @JsonProperty
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.TIME_FORMAT_STRICT)
-  private Date time;
+  private String time;
 
   @JsonProperty
   private String browser;
@@ -30,7 +25,7 @@ public final class Delivery {
   public Delivery() {
   }
 
-  public Delivery(int advertisementId, String deliveryId, Date time, String browser, String os, String site) {
+  public Delivery(int advertisementId, String deliveryId, String time, String browser, String os, String site) {
     this.advertisementId = advertisementId;
     this.deliveryId = deliveryId;
     this.time = time;
@@ -47,7 +42,7 @@ public final class Delivery {
     return deliveryId;
   }
 
-  public Date getTime() {
+  public String getTime() {
     return time;
   }
 

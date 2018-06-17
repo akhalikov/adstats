@@ -6,20 +6,20 @@ import com.akhalikov.adstats.ads.delivery.Delivery;
 import com.datastax.driver.core.Row;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
-
-import org.joda.time.DateTime;
+import java.time.ZonedDateTime;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-public class SaveAdsControllerClickTest extends RestTestBase {
+public class AdsControllerClickTest extends RestTestBase {
 
   @Test
   public void shouldReturn200ForValidRequest() {
-    Delivery delivery = createTestDelivery();
-    Click click = getTestClick(delivery.getDeliveryId(), DateTime.now().toDate());
+    Delivery delivery = getTestDelivery(ZonedDateTime.now().minusSeconds(100));
+    postOk("/delivery", delivery, Delivery.class);
 
-    postAndExpect("/ads/click", click, Click.class, HttpStatus.OK);
+    Click click = getTestClick(delivery.getDeliveryId(), ZonedDateTime.now());
+    postOk("/click", click, Click.class);
 
     Row result = cassandraSession.execute(select()
         .from("click")
@@ -32,8 +32,8 @@ public class SaveAdsControllerClickTest extends RestTestBase {
 
   @Test
   public void shouldReturn404IfDeliveryIsNotFound() {
-    Click click = createTestClick("missing-delivery-id");
+    Click click = getTestClick("missing-delivery-id", ZonedDateTime.now());
 
-    postAndExpect("/ads/click", click, Click.class, HttpStatus.NOT_FOUND);
+    postAndExpect("/click", click, Click.class, HttpStatus.NOT_FOUND);
   }
 }

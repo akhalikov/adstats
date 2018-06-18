@@ -13,7 +13,6 @@ public final class Stats {
   private long installs;
 
   public Stats() {
-    this(0, 0, 0);
   }
 
   Stats(long deliveries, long clicks, long installs) {

@@ -4,6 +4,8 @@ import com.adstats.ads.delivery.Delivery;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.List;
 
 public class StatsService {
 
@@ -13,10 +15,16 @@ public class StatsService {
     this.statsDao = statsDao;
   }
 
-  BasicStats getStatistics(String start, String end) {
-    Interval interval = Interval.from(start, end);
-    Stats stats = statsDao.fetchStats(interval);
+  BasicStats getStatistics(Date start, Date end) {
+    Interval interval = new Interval(start, end);
+    Stats stats = statsDao.getStatistics(interval);
     return new BasicStats(interval, stats);
+  }
+
+  GroupStats getStatisticsByGroups(Date start, Date end, List<String> groups) {
+    Interval interval = new Interval(start, end);
+    List<GroupStatsItem> groupStats = statsDao.getStatisticsByGroup(interval, groups);
+    return new GroupStats(interval, groupStats);
   }
 
   public void updateMetric(Metric metric, Delivery delivery, Instant time) {

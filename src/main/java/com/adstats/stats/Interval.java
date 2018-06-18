@@ -1,7 +1,6 @@
 package com.adstats.stats;
 
 import static com.adstats.util.DateTimeUtils.TIME_FORMAT_SHORT;
-import static com.adstats.util.DateTimeUtils.parseShort;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -30,11 +29,5 @@ public final class Interval {
 
   public Date getEnd() {
     return end;
-  }
-
-  public static Interval from(String start, String end) {
-    Date startTime = Date.from(parseShort(start, true));
-    Date endTime = Date.from(parseShort(end, true));
-    return new Interval(startTime, endTime);
   }
 }

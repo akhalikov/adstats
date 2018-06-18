@@ -1,4 +1,4 @@
-package com.adstats.stats;
+package com.adstats.stats.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,7 +12,7 @@ public final class BasicStats {
   public BasicStats() {
   }
 
-  BasicStats(Interval interval, Stats stats) {
+  public BasicStats(Interval interval, Stats stats) {
     this.interval = interval;
     this.stats = stats;
   }

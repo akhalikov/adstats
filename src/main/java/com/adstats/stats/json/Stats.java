@@ -1,4 +1,4 @@
-package com.adstats.stats;
+package com.adstats.stats.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,7 +15,7 @@ public final class Stats {
   public Stats() {
   }
 
-  Stats(long deliveries, long clicks, long installs) {
+  public Stats(long deliveries, long clicks, long installs) {
     this.deliveries = deliveries;
     this.clicks = clicks;
     this.installs = installs;

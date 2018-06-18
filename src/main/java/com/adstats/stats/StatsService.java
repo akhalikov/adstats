@@ -1,9 +1,13 @@
 package com.adstats.stats;
 
 import com.adstats.ads.delivery.Delivery;
-
+import com.adstats.stats.json.BasicStats;
+import com.adstats.stats.json.GroupStats;
+import com.adstats.stats.json.GroupStatsItem;
+import com.adstats.stats.json.Interval;
+import com.adstats.stats.json.Stats;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +32,6 @@ public class StatsService {
   }
 
   public void updateMetric(Metric metric, Delivery delivery, Instant time) {
-    statsDao.updateMetric(metric, time.truncatedTo(ChronoUnit.SECONDS), delivery.getBrowser(), delivery.getOs());
+    statsDao.updateMetric(metric, time.truncatedTo(SECONDS), delivery.getBrowser(), delivery.getOs());
   }
 }

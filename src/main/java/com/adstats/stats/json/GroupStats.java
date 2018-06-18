@@ -1,4 +1,4 @@
-package com.adstats.stats;
+package com.adstats.stats.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
@@ -13,7 +13,7 @@ public class GroupStats {
   public GroupStats() {
   }
 
-  GroupStats(Interval interval, List<GroupStatsItem> data) {
+  public GroupStats(Interval interval, List<GroupStatsItem> data) {
     this.interval = interval;
     this.data = data;
   }

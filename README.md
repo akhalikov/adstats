@@ -5,15 +5,20 @@
 Simple AdTech web service that tracks the ads that are being delivered through their lifecycle 
 and generates some simple statistics.
 
+Requirements:
+
+* Maven
+* Java 8
+
 ### Build and run
 
 The easiest way to build the application is to run the command:
 
 ```
-./mvnw package && java -jar target/adstats-0.1.0-SNAPSHOT.jar
+$ mvn clean package && java -jar target/adstats-0.1.0-SNAPSHOT.jar
 ```
 
-Then if you go to `http://localhost:9090/actuator/health` you should see `{"status":"UP"}` message.
+The application runs on port 9090 so if you go to `http://localhost:9090/actuator/health` you should see `{"status":"UP"}` message.
 
 ### Docker
 

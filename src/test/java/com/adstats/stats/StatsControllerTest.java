@@ -5,17 +5,8 @@ import com.adstats.ads.click.Click;
 import com.adstats.ads.delivery.Delivery;
 import com.adstats.ads.install.Install;
 import static com.adstats.util.DateTimeUtils.formatShortWithZone;
-import static com.adstats.util.DateTimeUtils.parseShort;
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.bindMarker;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.gte;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.lte;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.summingLong;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
@@ -61,97 +52,51 @@ public class StatsControllerTest extends RestTestBase {
     postOk("/install", getTestInstall(click.getClickId(), startTime.minusHours(1)), Install.class);
 
     BasicStats basicStats = getOk("/statistics?start={start}&end={end}",
-        BasicStats.class,
-        formatShortWithZone(startTime),
-        formatShortWithZone(endTime));
+        BasicStats.class, formatShortWithZone(startTime), formatShortWithZone(endTime));
 
-    Interval interval = basicStats.getInterval();
-
-    assertEquals(Date.from(startTime.truncatedTo(ChronoUnit.SECONDS).toInstant()), interval.getStart());
-    assertEquals(Date.from(endTime.truncatedTo(ChronoUnit.SECONDS).toInstant()), interval.getEnd());
+    assertInterval(startTime, endTime, basicStats.getInterval());
 
     Stats stats = basicStats.getStats();
-
-    assertEquals(2, stats.getDeliveries());
-    assertEquals(1, stats.getClicks());
-    assertEquals(1, stats.getInstalls());
+    assertStats(2, 1, 1, stats);
   }
 
   @Test
-  public void shouldReturnStatisticsByGroups() {
+  public void shouldReturnStatisticsByBrowser() {
     ZonedDateTime startTime = ZonedDateTime.now().minusSeconds(200);
     ZonedDateTime endTime = startTime.plusSeconds(100);
 
-    Delivery delivery1 = getTestDelivery(startTime.plusSeconds(10), "Chrome", "iOS");
-    postOk("/delivery", delivery1, Delivery.class);
+    Delivery delivery = getTestDelivery(startTime.plusSeconds(10), "Chrome", "iOS");
+    postOk("/delivery", delivery, Delivery.class);
 
-    Delivery delivery2 = getTestDelivery(startTime.plusSeconds(20), "Safari", "iOS");
-    postOk("/delivery", delivery2, Delivery.class);
-    postOk("/delivery", getTestDelivery(startTime.plusSeconds(15), "Chrome", "Android"), Delivery.class);
-    postOk("/delivery", getTestDelivery(startTime.plusSeconds(16), "Chrome", "Android"), Delivery.class);
+    Click click = getTestClick(delivery.getDeliveryId(), startTime.plusSeconds(12));
+    postOk("/click", click, Click.class);
+
+    postOk("/install", getTestInstall(click.getClickId(), startTime.plusSeconds(16)), Install.class);
+
+    GroupStats groupStats = getOk("/statistics?start={start}&end={end}&group_by=browser&group_by=os",
+        GroupStats.class, formatShortWithZone(startTime), formatShortWithZone(endTime));
+
+    assertInterval(startTime, endTime, groupStats.getInterval());
+
+    List<GroupStatsItem> data = groupStats.getData();
+    assertNotNull(data);
+
+    GroupStatsItem statsItem = data.get(0);
+    Map<String, String> fields = statsItem.getFields();
+    assertEquals("Chrome", fields.get("browser"));
+    assertEquals("iOS", fields.get("os"));
+
+    assertStats(1, 1, 1, statsItem.getStats());
   }
 
-  private void fetchMetricByGroups(Metric metric, String start, String end) {
-    PreparedStatement getMetricQuery = cassandraSession.prepare(QueryBuilder
-        .select("counter_value", "browser", "os")
-        .from("stats")
-        .where(eq("metric_name", bindMarker()))
-        .and(gte("event_time", bindMarker()))
-        .and(lte("event_time", bindMarker())));
-
-    Date startTime = Date.from(parseShort(start, true));
-    Date endTime = Date.from(parseShort(end, true));
-
-    List<Row> rows = cassandraSession
-        .execute(getMetricQuery.bind(metric.toString().toLowerCase(), startTime, endTime))
-        .all();
-
-    Map<String, Map<String, Long>> results = rows.stream()
-        .map(row -> new GroupMetric(
-            row.getLong("counter_value"),
-            row.getString("browser"),
-            row.getString("os")
-        ))
-        .collect(
-            groupingBy(GroupMetric::getBrowser,
-            groupingBy(GroupMetric::getOs, summingLong(GroupMetric::getValue)))
-        );
-
-    for (String key: results.keySet()) {
-      System.out.println(key + "=" + results.get(key));
-    }
+  private static void assertInterval(ZonedDateTime expectedStart, ZonedDateTime expectedEnd, Interval interval) {
+    assertEquals(Date.from(expectedStart.truncatedTo(ChronoUnit.SECONDS).toInstant()), interval.getStart());
+    assertEquals(Date.from(expectedEnd.truncatedTo(ChronoUnit.SECONDS).toInstant()), interval.getEnd());
   }
 
-  static class GroupMetric {
-    long value;
-    String browser;
-    String os;
-
-    public GroupMetric(long value, String browser, String os) {
-      this.value = value;
-      this.browser = browser;
-      this.os = os;
-    }
-
-    public long getValue() {
-      return value;
-    }
-
-    public String getBrowser() {
-      return browser;
-    }
-
-    public String getOs() {
-      return os;
-    }
-
-    @Override
-    public String toString() {
-      return "GroupMetric{" +
-          "value=" + value +
-          ", browser='" + browser + '\'' +
-          ", os='" + os + '\'' +
-          '}';
-    }
+  private static void assertStats(long expectedDeliveries, long expectedClicks, long expectedInstalls, Stats stats) {
+    assertEquals(expectedDeliveries, stats.getDeliveries());
+    assertEquals(expectedClicks, stats.getClicks());
+    assertEquals(expectedInstalls, stats.getInstalls());
   }
 }

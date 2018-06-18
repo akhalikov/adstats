@@ -8,13 +8,21 @@ public class GroupStats {
   private Interval interval;
 
   @JsonProperty
-  private List<GroupStats> data;
+  private List<GroupStatsItem> data;
 
   public GroupStats() {
   }
 
-  public GroupStats(Interval interval, List<GroupStats> data) {
+  GroupStats(Interval interval, List<GroupStatsItem> data) {
     this.interval = interval;
     this.data = data;
+  }
+
+  public Interval getInterval() {
+    return interval;
+  }
+
+  public List<GroupStatsItem> getData() {
+    return data;
   }
 }

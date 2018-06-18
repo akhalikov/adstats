@@ -1,7 +1,7 @@
-package com.adstats.stats;
+package com.adstats.stats.json;
 
+import com.adstats.stats.GroupByField;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -13,11 +13,11 @@ public final class GroupStatsItem {
   @JsonProperty
   private Stats stats;
 
-  GroupStatsItem() {
+  public GroupStatsItem() {
   }
 
-  public void addField(String key, String value) {
-    fields.put(key, value);
+  public void addField(GroupByField field, String value) {
+    fields.put(field.getKey(), value);
   }
 
   public Map<String, String> getFields() {

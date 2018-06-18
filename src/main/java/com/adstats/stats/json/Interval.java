@@ -1,4 +1,4 @@
-package com.adstats.stats;
+package com.adstats.stats.json;
 
 import static com.adstats.util.DateTimeUtils.TIME_FORMAT_SHORT;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,7 +18,7 @@ public final class Interval {
   public Interval() {
   }
 
-  Interval(Date start, Date end) {
+  public Interval(Date start, Date end) {
     this.start = start;
     this.end = end;
   }

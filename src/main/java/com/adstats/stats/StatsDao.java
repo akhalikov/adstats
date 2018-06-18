@@ -1,6 +1,14 @@
 package com.adstats.stats;
 
 import com.adstats.core.dao.AbstractDao;
+import static com.adstats.stats.GroupByField.BROWSER;
+import static com.adstats.stats.GroupByField.OS;
+import static com.adstats.stats.Metric.CLICK;
+import static com.adstats.stats.Metric.DELIVERY;
+import static com.adstats.stats.Metric.INSTALL;
+import com.adstats.stats.json.GroupStatsItem;
+import com.adstats.stats.json.Interval;
+import com.adstats.stats.json.Stats;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Row;
@@ -12,10 +20,6 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.gte;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.in;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.incr;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.lte;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.summingLong;
-import static java.util.stream.Collectors.toList;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.summingLong;
+import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
 
 public class StatsDao extends AbstractDao {
@@ -52,7 +59,7 @@ public class StatsDao extends AbstractDao {
   }
 
   void updateMetric(Metric metric, Instant time, String browser, String os) {
-    BoundStatement statement = increaseMetricQuery.bind(metric.toString().toLowerCase(), time, browser, os);
+    BoundStatement statement = increaseMetricQuery.bind(metric.getKey(), time, browser, os);
     getCassandraSession().execute(statement);
   }
 
@@ -69,12 +76,12 @@ public class StatsDao extends AbstractDao {
       throw new IllegalArgumentException("groups should not be empty");
     }
     Set<String> groupSet = new HashSet<>(groups);
-    if (groupSet.contains(GroupByField.BROWSER.getKey()) && groupSet.contains(GroupByField.OS.getKey())) {
+    if (groupSet.contains(BROWSER.getKey()) && groupSet.contains(OS.getKey())) {
       return getStatsForAllGroups(interval);
-    } else if (groupSet.contains(GroupByField.BROWSER.getKey())) {
-      return getStatsForSingleGroup(interval, GroupByField.BROWSER);
+    } else if (groupSet.contains(BROWSER.getKey())) {
+      return getStatsForSingleGroup(interval, BROWSER);
     } else {
-      return getStatsForSingleGroup(interval, GroupByField.OS);
+      return getStatsForSingleGroup(interval, OS);
     }
   }
 
@@ -82,19 +89,20 @@ public class StatsDao extends AbstractDao {
     List<GroupStatsItem> groupStatsItems = new ArrayList<>();
     Map<String, Map<String, Map<String, Long>>> metricsByGroupsMap = fetchMetricsForInterval(interval).stream()
         .collect(
-            groupingBy(row -> row.getString(GroupByField.BROWSER.getKey()),
-                groupingBy(row -> row.getString(GroupByField.OS.getKey()),
+            groupingBy(row -> row.getString(BROWSER.getKey()),
+                groupingBy(row -> row.getString(OS.getKey()),
                     groupingBy(row -> row.getString("metric_name"),
                         summingLong(row -> row.getLong("counter_value"))))));
 
 
-    metricsByGroupsMap.forEach((browserName, subGroup) -> subGroup.forEach((osName, metricsMap) -> {
-      GroupStatsItem statsItem = new GroupStatsItem();
-      statsItem.addField(GroupByField.BROWSER.getKey(), browserName);
-      statsItem.addField(GroupByField.OS.getKey(), osName);
-      statsItem.setStats(getStatsFromMap(metricsMap));
-      groupStatsItems.add(statsItem);
-    }));
+    metricsByGroupsMap.forEach((browserName, subGroup) ->
+        subGroup.forEach((osName, metricsMap) -> {
+          GroupStatsItem statsItem = new GroupStatsItem();
+          statsItem.addField(BROWSER, browserName);
+          statsItem.addField(OS, osName);
+          statsItem.setStats(getStatsFromMap(metricsMap));
+          groupStatsItems.add(statsItem);
+        }));
 
     return groupStatsItems;
   }
@@ -109,7 +117,7 @@ public class StatsDao extends AbstractDao {
 
     metricsByGroupsMap.forEach((groupValue, metricsMap) -> {
         GroupStatsItem statsItem = new GroupStatsItem();
-        statsItem.addField(groupByField.getKey(), groupValue);
+        statsItem.addField(groupByField, groupValue);
         statsItem.setStats(getStatsFromMap(metricsMap));
         groupStatsItems.add(statsItem);
     });
@@ -124,9 +132,9 @@ public class StatsDao extends AbstractDao {
   }
 
   private static Stats getStatsFromMap(Map<String, Long> metricsMap) {
-    long deliveries = metricsMap.getOrDefault(Metric.DELIVERY.getKey(), 0L);
-    long clicks = metricsMap.getOrDefault(Metric.CLICK.getKey(), 0L);
-    long installs = metricsMap.getOrDefault(Metric.INSTALL.getKey(), 0L);
+    long deliveries = metricsMap.getOrDefault(DELIVERY.getKey(), 0L);
+    long clicks = metricsMap.getOrDefault(CLICK.getKey(), 0L);
+    long installs = metricsMap.getOrDefault(INSTALL.getKey(), 0L);
     return new Stats(deliveries, clicks, installs);
   }
 }

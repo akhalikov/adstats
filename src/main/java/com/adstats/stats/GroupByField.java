@@ -4,7 +4,7 @@ public enum GroupByField {
   BROWSER,
   OS;
 
-  String getKey() {
+  public String getKey() {
     return name().toLowerCase();
   }
 }

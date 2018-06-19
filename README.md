@@ -18,7 +18,7 @@ The easiest way to build the application is to run the command:
 $ mvn spring-boot:run
 ```
 
-The application runs on port 9090 so if you go to `http://localhost:9090/actuator/health` you should see `{"status":"UP"}` message.
+The application runs on port `9090` so if you go to `http://localhost:9090/actuator/health` you should see `{"status":"UP"}` message.
 
 ### Docker
 

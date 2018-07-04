@@ -1,8 +1,8 @@
 package com.adstats.ads;
 
 import com.adstats.RestTestBase;
-import com.adstats.ads.click.Click;
-import com.adstats.ads.delivery.Delivery;
+import com.adstats.service.model.Click;
+import com.adstats.service.model.Delivery;
 import com.datastax.driver.core.Row;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
@@ -14,20 +14,20 @@ import org.springframework.http.HttpStatus;
 public class AdsControllerClickTest extends RestTestBase {
 
   @Test
-  public void shouldReturn200ForValidRequest() {
+  public void shouldAcceptValidRequest() {
     Delivery delivery = getTestDelivery(ZonedDateTime.now().minusSeconds(100));
     postOk("/delivery", delivery, Delivery.class);
 
-    Click click = getTestClick(delivery.getDeliveryId(), ZonedDateTime.now());
+    Click click = getTestClick(delivery.deliveryId, ZonedDateTime.now());
     postOk("/click", click, Click.class);
 
     Row result = cassandraSession.execute(select()
         .from("click")
-        .where(eq("click_id", click.getClickId())))
+        .where(eq("click_id", click.clickId)))
         .one();
 
-    assertEquals(click.getClickId(), result.getString("click_id"));
-    assertEquals(delivery.getDeliveryId(), result.getString("delivery_id"));
+    assertEquals(click.clickId, result.getString("click_id"));
+    assertEquals(delivery.deliveryId, result.getString("delivery_id"));
   }
 
   @Test

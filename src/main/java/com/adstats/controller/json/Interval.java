@@ -1,4 +1,4 @@
-package com.adstats.stats.json;
+package com.adstats.controller.json;
 
 import static com.adstats.util.DateTimeUtils.TIME_FORMAT_SHORT;
 import com.fasterxml.jackson.annotation.JsonFormat;

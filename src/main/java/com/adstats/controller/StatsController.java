@@ -1,7 +1,8 @@
-package com.adstats.stats;
+package com.adstats.controller;
 
-import com.adstats.stats.json.BasicStats;
-import com.adstats.stats.json.GroupStats;
+import com.adstats.stats.StatsService;
+import com.adstats.controller.json.BasicStats;
+import com.adstats.controller.json.GroupStats;
 import static com.adstats.util.DateTimeUtils.parseShort;
 import java.util.Date;
 import java.util.List;

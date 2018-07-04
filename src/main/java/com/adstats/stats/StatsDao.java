@@ -1,16 +1,16 @@
 package com.adstats.stats;
 
-import com.adstats.core.dao.AbstractDao;
 import static com.adstats.stats.GroupByField.BROWSER;
 import static com.adstats.stats.GroupByField.OS;
 import static com.adstats.stats.Metric.CLICK;
 import static com.adstats.stats.Metric.DELIVERY;
 import static com.adstats.stats.Metric.INSTALL;
-import com.adstats.stats.json.GroupStatsItem;
-import com.adstats.stats.json.Interval;
-import com.adstats.stats.json.Stats;
+import com.adstats.controller.json.GroupStatsItem;
+import com.adstats.controller.json.Interval;
+import com.adstats.controller.json.Stats;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.PreparedStatement;
+import com.datastax.driver.core.ResultSetFuture;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -32,14 +32,16 @@ import static java.util.stream.Collectors.summingLong;
 import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
 
-public class StatsDao extends AbstractDao {
+public class StatsDao {
   private static final List<String> METRIC_NAMES = Stream.of(Metric.values()).map(Metric::getKey).collect(toList());
+
+  private final Session cassandraSession;
 
   private final PreparedStatement increaseMetricQuery;
   private final PreparedStatement getMetricsQuery;
 
   public StatsDao(Session cassandraSession) {
-    super(cassandraSession);
+    this.cassandraSession = cassandraSession;
 
     increaseMetricQuery = cassandraSession.prepare(QueryBuilder
         .update("stats")
@@ -58,9 +60,13 @@ public class StatsDao extends AbstractDao {
         .and(lte("event_time", bindMarker())));
   }
 
-  void updateMetric(Metric metric, Instant time, String browser, String os) {
-    BoundStatement statement = increaseMetricQuery.bind(metric.getKey(), time, browser, os);
-    getCassandraSession().execute(statement);
+  ResultSetFuture updateMetric(Metric metric, Instant time, StatsData statsData) {
+    BoundStatement statement = increaseMetricQuery.bind(
+        metric.getKey(),
+        time,
+        statsData.getBrowser(),
+        statsData.getOs());
+    return cassandraSession.executeAsync(statement);
   }
 
   Stats getStatistics(Interval interval) {
@@ -126,7 +132,7 @@ public class StatsDao extends AbstractDao {
   }
 
   private List<Row> fetchMetricsForInterval(Interval interval) {
-    return getCassandraSession()
+    return cassandraSession
         .execute(getMetricsQuery.bind(METRIC_NAMES, interval.getStart(), interval.getEnd()))
         .all();
   }

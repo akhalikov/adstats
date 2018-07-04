@@ -1,9 +1,9 @@
 package com.adstats.ads;
 
 import com.adstats.RestTestBase;
-import com.adstats.ads.click.Click;
-import com.adstats.ads.delivery.Delivery;
-import com.adstats.ads.install.Install;
+import com.adstats.service.model.Click;
+import com.adstats.service.model.Delivery;
+import com.adstats.service.model.Install;
 import com.datastax.driver.core.Row;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
@@ -19,19 +19,19 @@ public class AdsControllerInstallTest extends RestTestBase {
     Delivery delivery = getTestDelivery(now().minusSeconds(100));
     postOk("/delivery", delivery, Delivery.class);
 
-    Click click = getTestClick(delivery.getDeliveryId(), now());
+    Click click = getTestClick(delivery.deliveryId, now());
     postOk("/click", click, Click.class);
 
-    Install install = getTestInstall(click.getClickId(), now());
+    Install install = getTestInstall(click.clickId, now());
     postOk("/install", install, Install.class);
 
     Row result = cassandraSession.execute(select()
         .from("install")
-        .where(eq("install_id", install.getInstallId())))
+        .where(eq("install_id", install.installId)))
         .one();
 
-    assertEquals(install.getInstallId(), result.getString("install_id"));
-    assertEquals(install.getClickId(), result.getString("click_id"));
+    assertEquals(install.installId, result.getString("install_id"));
+    assertEquals(install.clickId, result.getString("click_id"));
   }
 
   @Test

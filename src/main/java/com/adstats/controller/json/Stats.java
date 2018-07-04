@@ -1,4 +1,4 @@
-package com.adstats.stats.json;
+package com.adstats.controller.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

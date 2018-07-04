@@ -1,14 +1,12 @@
 package com.adstats;
 
-import com.adstats.ads.click.Click;
-import com.adstats.ads.delivery.Delivery;
-import com.adstats.ads.install.Install;
+import com.adstats.service.model.Click;
+import com.adstats.service.model.Delivery;
+import com.adstats.service.model.Install;
 import static com.adstats.util.DateTimeUtils.formatFull;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
-import java.time.ZonedDateTime;
 import static java.util.UUID.randomUUID;
-import javax.inject.Inject;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -20,10 +18,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.inject.Inject;
+import java.time.ZonedDateTime;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class RestTestBase {
   private static final String BASE_URL = "http://localhost:%d/ads";
+  private static final String TEST_SITE = "http://news.com";
 
   @LocalServerPort
   private int port;
@@ -43,7 +45,7 @@ public abstract class RestTestBase {
   }
 
   protected void postOk(String url, Object data, Class<?> responseType) {
-    postAndExpect(url, data, responseType, HttpStatus.OK);
+    postAndExpect(url, data, responseType, HttpStatus.ACCEPTED);
   }
 
   protected void postAndExpect(String url, Object data, Class<?> responseType, HttpStatus expectedStatus) {
@@ -55,7 +57,7 @@ public abstract class RestTestBase {
     return getAndExpect(url, responseType, HttpStatus.OK, queryParams);
   }
 
-  protected <T> T getAndExpect(String url, Class<T> responseType, HttpStatus expectedStatus, Object ...queryParams) {
+  private <T> T getAndExpect(String url, Class<T> responseType, HttpStatus expectedStatus, Object... queryParams) {
     ResponseEntity<T> responseEntity = testRestTemplate.getForEntity(getHost() + url, responseType, queryParams);
     assertEquals(expectedStatus, responseEntity.getStatusCode());
     return responseEntity.getBody();
@@ -69,19 +71,30 @@ public abstract class RestTestBase {
     return getTestDelivery(time, "Chrome", "iOS");
   }
 
-  protected static Delivery getTestDelivery(ZonedDateTime time, String browser, String os) {
-    return new Delivery(
-        randomUUID().toString(),
-        4242,
-        formatFull(time),
-        browser, os, "http://super-dooper-news.com");
+  private static Delivery getTestDelivery(ZonedDateTime time, String browser, String os) {
+    Delivery delivery = new Delivery();
+    delivery.deliveryId = randomUUID().toString();
+    delivery.advertisementId = 42;
+    delivery.browser = browser;
+    delivery.os = os;
+    delivery.site = TEST_SITE;
+    delivery.time = formatFull(time);
+    return delivery;
   }
 
   protected static Click getTestClick(String deliveryId, ZonedDateTime time) {
-    return new Click(randomUUID().toString(), deliveryId, formatFull(time));
+    Click click = new Click();
+    click.clickId = randomUUID().toString();
+    click.deliveryId = deliveryId;
+    click.time = formatFull(time);
+    return click;
   }
 
   protected static Install getTestInstall(String clickId, ZonedDateTime time) {
-    return new Install(randomUUID().toString(), clickId, formatFull(time));
+    Install install = new Install();
+    install.installId = randomUUID().toString();
+    install.clickId = clickId;
+    install.time = formatFull(time);
+    return install;
   }
 }

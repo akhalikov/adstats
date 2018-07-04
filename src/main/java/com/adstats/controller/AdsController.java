@@ -1,11 +1,12 @@
-package com.adstats.ads;
+package com.adstats.controller;
 
-import com.adstats.ads.click.Click;
-import com.adstats.ads.click.ClickService;
-import com.adstats.ads.delivery.Delivery;
-import com.adstats.ads.delivery.DeliveryService;
-import com.adstats.ads.install.Install;
-import com.adstats.ads.install.InstallService;
+import com.adstats.service.model.Click;
+import com.adstats.service.model.Delivery;
+import com.adstats.service.model.Install;
+import com.adstats.service.ClickService;
+import com.adstats.service.DeliveryService;
+import com.adstats.service.InstallService;
+import static com.adstats.util.DateTimeUtils.parseFull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/ads")
+@RequestMapping(value = "/ads", consumes = "application/json")
+@ResponseStatus(HttpStatus.ACCEPTED)
 public class AdsController {
 
   private final DeliveryService deliveryService;
@@ -27,21 +29,24 @@ public class AdsController {
     this.installService = installService;
   }
 
-  @PostMapping(value = "/delivery", consumes = "application/json")
-  @ResponseStatus(HttpStatus.OK)
+  @PostMapping(value = "/delivery")
   public void saveDelivery(@RequestBody Delivery delivery) {
-    deliveryService.saveDelivery(delivery);
+    deliveryService.saveDelivery(
+        delivery.deliveryId,
+        delivery.advertisementId,
+        parseFull(delivery.time),
+        delivery.browser,
+        delivery.os,
+        delivery.site);
   }
 
-  @PostMapping(value = "/click", consumes = "application/json")
-  @ResponseStatus(HttpStatus.OK)
+  @PostMapping(value = "/click")
   public void saveClick(@RequestBody Click click) {
-    clickService.saveClick(click);
+    clickService.saveClick(click.clickId, click.deliveryId, parseFull(click.time));
   }
 
-  @PostMapping(value = "/install", consumes = "application/json")
-  @ResponseStatus(HttpStatus.OK)
+  @PostMapping(value = "/install")
   public void saveInstall(@RequestBody Install install) {
-    installService.saveInstall(install);
+    installService.saveInstall(install.installId, install.clickId, parseFull(install.time));
   }
 }

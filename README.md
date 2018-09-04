@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/akhalikov/adstats-assignment.svg?branch=master)](https://travis-ci.org/akhalikov/adstats-assignment) [![codecov](https://codecov.io/gh/akhalikov/adstats-assignment/branch/master/graph/badge.svg)](https://codecov.io/gh/akhalikov/adstats-assignment)
+[![Build Status](https://travis-ci.org/akhalikov/adstats.svg?branch=master)](https://travis-ci.org/akhalikov/adstats) [![codecov](https://codecov.io/gh/akhalikov/adstats/branch/master/graph/badge.svg)](https://codecov.io/gh/akhalikov/adstats)
 
 # AdStats assignment
 

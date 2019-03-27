@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/akhalikov/adstats.svg?branch=master)](https://travis-ci.org/akhalikov/adstats) [![codecov](https://codecov.io/gh/akhalikov/adstats/branch/master/graph/badge.svg)](https://codecov.io/gh/akhalikov/adstats)
+[![Build Status](https://travis-ci.org/akhalikov/adstats.svg?branch=master)](https://travis-ci.org/akhalikov/adstats) [![codecov](https://codecov.io/gh/akhalikov/adstats/branch/master/graph/badge.svg)](https://codecov.io/gh/akhalikov/adstats) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1d1cc66d09da459aa1164edfb6667a90)](https://www.codacy.com/app/akhalikov/adstats?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=akhalikov/adstats&amp;utm_campaign=Badge_Grade)
 
 # AdStats assignment
 
